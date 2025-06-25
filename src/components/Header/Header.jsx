@@ -35,7 +35,7 @@ export const Header = () => {
         <Navbar.Toggle aria-controls="main-navbar" />
         <Navbar.Collapse id="main-navbar">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">Inicio</Nav.Link>
+            <Nav.Link as={Link} to="/about">Inicio</Nav.Link>
             <Nav.Link as={Link} to="/map">Mapa</Nav.Link>
             <Nav.Link as={Link} to="/reports/list">
               Reportes

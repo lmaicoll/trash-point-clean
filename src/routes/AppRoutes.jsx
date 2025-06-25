@@ -12,6 +12,7 @@ import { AdminPanel } from '../pages/AdminPanel';
 import { ReportList } from '../pages/reports/ReportList';
 import { ReportCreate } from '../pages/reports/ReportCreate';
 import { ReportsDashboard } from '../pages/reports/ReportsDashboard';
+import { About } from '../pages/About';
 export const AppRoutes = () => (
   <Routes>
     <Route
@@ -22,6 +23,14 @@ export const AppRoutes = () => (
         </PrivateRoute>
       }
     />
+    <Route
+  path="/about"
+  element={
+    <PrivateRoute>
+      <About />
+    </PrivateRoute>
+  }
+/>
     <Route
       path="/dashboard"
       element={
