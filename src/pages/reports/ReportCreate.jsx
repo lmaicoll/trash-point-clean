@@ -1,3 +1,4 @@
+// src/pages/reports/ReportCreate.jsx
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +26,15 @@ export const ReportCreate = () => {
     }
   };
 
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -34,18 +44,23 @@ export const ReportCreate = () => {
     if (!user) return setError('Usuario no autenticado');
     if (!marker || !address) return setError('Selecciona una ubicación válida en el mapa.');
 
-    const data = {
-      user_id: user.id,
-      description: formData.description,
-      latitude: marker.lat,
-      longitude: marker.lng,
-      address,
-      status: 'pendiente',
-      created_at: new Date().toISOString(),
-      image_url: formData.image ? URL.createObjectURL(formData.image) : 'https://via.placeholder.com/150?text=Sin+imagen'
-    };
-
     try {
+      let base64Image = 'https://via.placeholder.com/150?text=Sin+imagen';
+      if (formData.image) {
+        base64Image = await convertToBase64(formData.image);
+      }
+
+      const data = {
+        user_id: user.id,
+        description: formData.description,
+        latitude: marker.lat,
+        longitude: marker.lng,
+        address,
+        status: 'pendiente',
+        created_at: new Date().toISOString(),
+        image_url: base64Image
+      };
+
       await axios.post(`${API_BASE_URL}/reports`, data);
       setSuccess(true);
       setTimeout(() => navigate('/reports/list'), 1500);
@@ -79,7 +94,9 @@ export const ReportCreate = () => {
           <Form.Label>Ubicación</Form.Label>
           <MapComponent marker={marker} setMarker={setMarker} setAddress={setAddress} />
           {address && (
-            <Form.Text className="text-muted d-block mt-2">Dirección detectada: {address}</Form.Text>
+            <Form.Text className="text-muted d-block mt-2">
+              Dirección detectada: {address}
+            </Form.Text>
           )}
         </Form.Group>
 
@@ -98,4 +115,3 @@ export const ReportCreate = () => {
     </div>
   );
 };
-
